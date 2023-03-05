@@ -43,7 +43,6 @@ export const MotionWordCards: React.FC = () => {
   };
 
   
-
   return (
     <div className="flex w-full flex-col justify-center align-middle">
       <div className="min-h-40 mb-4 flex w-full justify-center">
@@ -59,22 +58,34 @@ export const MotionWordCards: React.FC = () => {
               <div className="card-body items-center">
                 {currentWordData?.id ? (
                   <>
-                    <p className="-mt-5">
+                    <motion.p
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="-mt-5"
+                    >
                       {wordsState.currentWordIndex + 1} / {words.length}
-                    </p>
+                    </motion.p>
 
-                    <h2 className="card-title my-4 text-2xl">
+                    <motion.h2
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="card-title my-4 text-2xl"
+                    >
                       {currentWordData.word}
-                    </h2>
+                    </motion.h2>
 
-                    <p className="tracking-widest drop-shadow-sm">{`${
-                      wordsState.currentUserInputValue
-                    }${hashWord(
+                    <motion.p
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="tracking-widest drop-shadow-sm"
+                    >{`${wordsState.currentUserInputValue}${hashWord(
                       currentWordData.meaning,
                       wordsState.currentUserInputValue.length
                     )
                       .join("")
-                      .slice(wordsState.currentUserInputValue.length)}`}</p>
+                      .slice(
+                        wordsState.currentUserInputValue.length
+                      )}`}</motion.p>
                   </>
                 ) : (
                   <>
@@ -93,7 +104,6 @@ export const MotionWordCards: React.FC = () => {
         </AnimatePresence>
         {wordsState.guessState !== "natural" && <div className="h-44"></div>}
       </div>
-
       <div className="my-5 flex justify-center">
         <motion.input
           ref={inputRef}
@@ -105,8 +115,8 @@ export const MotionWordCards: React.FC = () => {
           onChange={onInputChange}
         />
       </div>
-
       <Keyboard />
+      <pre>{JSON.stringify(wordsState.userGuesses, null, 4)}</pre>
     </div>
   );
 };

@@ -1,10 +1,12 @@
 import { api } from "@/utils/api";
+import { useCallback, useMemo, useReducer } from "react";
 import {
-  useCallback, useMemo,
-  useReducer
-} from "react";
-import { type WordsState, type WordAction, wordActionTypes, type GuessState } from "../domain/words";
-
+  type WordsState,
+  type WordAction,
+  wordActionTypes,
+  type GuessState,
+  type WordGuess,
+} from "../domain/words";
 
 export const useWordsSource = () => {
   const { data: words } = api.word.getAll.useQuery(
@@ -40,6 +42,16 @@ export const useWordsSource = () => {
             ...state,
             guessState: action.payload,
           };
+        case wordActionTypes.appendWordGuess:
+          return {
+            ...state,
+            userGuesses: [...state.userGuesses, action.payload],
+          };
+        case wordActionTypes.resetWordGuesses:
+          return {
+            ...state,
+            userGuesses: [],
+          };
 
         default:
           return state;
@@ -49,6 +61,7 @@ export const useWordsSource = () => {
       currentWordIndex: 0,
       currentUserInputValue: "",
       guessState: "natural",
+      userGuesses: [],
     }
   );
 
@@ -63,7 +76,7 @@ export const useWordsSource = () => {
     dispatch({ type: wordActionTypes.setUserInputValue, payload: "" });
   }, [hasNextWord]);
 
-  const setWordGuessState = useCallback(
+  const tempSetWordGuessState = useCallback(
     (result: GuessState) => {
       const timeoutMs = 305;
 
@@ -88,25 +101,42 @@ export const useWordsSource = () => {
     return words[wordsState.currentWordIndex];
   }, [words, wordsState.currentWordIndex]);
 
+  const addUserGuess = useCallback((wordGuess: WordGuess) => {
+    dispatch({ type: wordActionTypes.appendWordGuess, payload: wordGuess });
+  }, []);
+
+  const resetUserGuesses = useCallback(() => {
+    dispatch({ type: wordActionTypes.resetWordGuesses });
+  }, []);
+
   const onInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (!currentWordData?.word) return 
       if (event.target.value !== " " && wordsState.guessState === "natural") {
         setUserInputValue(event.target.value);
       }
 
-      if (event.target.value.length === currentWordData?.meaning.length) {
+      if (event.target.value.length === currentWordData.meaning.length) {
+        addUserGuess({
+          word: currentWordData?.word,
+          meaning: currentWordData?.meaning,
+          guess: event.target.value,
+        });
+
         if (event.target.value === currentWordData?.meaning) {
-          setWordGuessState("correct");
+          tempSetWordGuessState("correct");
         } else {
-          setWordGuessState("incorrect");
+          tempSetWordGuessState("incorrect");
         }
       }
     },
     [
       setUserInputValue,
       currentWordData?.meaning,
-      setWordGuessState,
+      tempSetWordGuessState,
       wordsState.guessState,
+      addUserGuess,
+      currentWordData?.word,
     ]
   );
 
@@ -117,7 +147,7 @@ export const useWordsSource = () => {
     onNextWord,
     onInputChange,
     setUserInputValue,
-    setWordGuessState,
+    tempSetWordGuessState,
     wordsState,
   };
 };
