@@ -12,6 +12,7 @@ import type { Note, Topic } from "@prisma/client";
 import { type CreateNote, NoteEditor } from "@/components/NoteEditor";
 import { WordCard, WordCardList } from "@/components/WordCard";
 import { MotionWordCards } from "@/components/MotionWordCards";
+import { WordsProvider } from "@/context/WordsContext";
 
 
 const Home: NextPage = () => {
@@ -75,48 +76,11 @@ export const Content: React.FC = () => {
     },
   });
 
-  const words = [
-    {
-      id: "1",
-      word: "hello",
-      meaning: "czesc",
-      completed: false,
-    },
-    {
-      id: "2",
-      word: "bye",
-      meaning: "do widzenia",
-      completed: false,
-    },
-    {
-      id: "3",
-      word: "good",
-      meaning: "dobry",
-      completed: false,
-    },
-    {
-      id: "4",
-      word: "bad",
-      meaning: "zly",
-      completed: false,
-    },
-    {
-      id: "5",
-      word: "yes",
-      meaning: "tak",
-      completed: false,
-    },
-    {
-      id: "6",
-      word: "no",
-      meaning: "nie",
-      completed: false,
-    },
-  ];
 
   return (
-    <main className="mx-5 mt-5 ">
-      {/* <div>
+    <WordsProvider>
+      <main className="mx-5 mt-5 ">
+        {/* <div>
         <ul className="menu rounded-box w-56 bg-base-100 p-2">
           {topics?.map((topic) => (
             <li key={topic.id}>
@@ -147,19 +111,20 @@ export const Content: React.FC = () => {
           }}
         />
       </div> */}
-      <div className="">
-        {/* {selectedTopic && (
+        <div className="">
+          {/* {selectedTopic && (
           <NoteEditor
             onSave={(note: CreateNote) => {
               console.log("hello", note);
             }}
           />
         )} */}
-        {/* <WordCardList words={words} /> */}
+          {/* <WordCardList words={words} /> */}
 
-        <MotionWordCards words={words} />
-      </div>
-    </main>
+          <MotionWordCards />
+        </div>
+      </main>
+    </WordsProvider>
   );
 };
 

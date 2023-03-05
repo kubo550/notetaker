@@ -74,6 +74,7 @@ model Topic {
     userId    String
     user      User     @relation(fields: [userId], references: [id])
     notes     Note[]
+    words     Word[]
 }
 
 model Note {
@@ -82,6 +83,16 @@ model Note {
     updatedAt DateTime @updatedAt
     title     String
     content   String   @db.Text
+    topic     Topic    @relation(fields: [topicId], references: [id])
+    topicId   String
+}
+
+model Word {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt @default(now())
+    word      String
+    meaning   String
     topic     Topic    @relation(fields: [topicId], references: [id])
     topicId   String
 }
