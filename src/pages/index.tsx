@@ -9,6 +9,7 @@ import type { Topic } from "@prisma/client";
 import { MotionWordCards } from "@/components/MotionWordCards";
 import { WordsProvider } from "@/context/WordsContext";
 import { Footer } from "@/components/Footer";
+import Link from "next/link";
 
 const Home: NextPage = () => {
   return (
@@ -25,6 +26,10 @@ const Home: NextPage = () => {
       <div className="flex flex-col min-h-screen">
 
         <Header />
+        <Link href={"/dashboard"}>
+          Dashboard
+        </Link>
+
         <Content />
         <Footer />
       </div>
