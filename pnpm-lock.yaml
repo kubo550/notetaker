@@ -13,6 +13,7 @@ specifiers:
   '@trpc/react-query': ^10.9.0
   '@trpc/server': ^10.9.0
   '@types/eslint': ^8.21.1
+  '@types/fast-levenshtein': ^0.0.2
   '@types/lodash': ^4.14.191
   '@types/node': ^18.11.18
   '@types/prettier': ^2.7.2
@@ -26,6 +27,7 @@ specifiers:
   daisyui: ^2.51.1
   eslint: ^8.30.0
   eslint-config-next: 13.1.6
+  fast-levenshtein: ^3.0.0
   framer-motion: ^10.0.1
   lodash: ^4.17.21
   next: 13.1.6
@@ -55,6 +57,7 @@ dependencies:
   '@trpc/server': 10.12.0
   '@uiw/react-codemirror': 4.19.9_baspzbimxvs2elm6yopg5vnnpa
   codemirror: 6.0.1
+  fast-levenshtein: 3.0.0
   framer-motion: 10.0.1_biqbaboplfbrettd7655fr4n2y
   lodash: 4.17.21
   next: 13.1.6_biqbaboplfbrettd7655fr4n2y
@@ -68,6 +71,7 @@ dependencies:
 devDependencies:
   '@tailwindcss/typography': 0.5.9_tailwindcss@3.2.7
   '@types/eslint': 8.21.1
+  '@types/fast-levenshtein': 0.0.2
   '@types/lodash': 4.14.191
   '@types/node': 18.14.1
   '@types/prettier': 2.7.2
@@ -766,6 +770,10 @@ packages:
 
   /@types/estree/1.0.0:
     resolution: {integrity: sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==}
+    dev: true
+
+  /@types/fast-levenshtein/0.0.2:
+    resolution: {integrity: sha512-h9AGeNlFimLtFUlEZgk+hb3LUT4tNHu8y0jzCUeTdi1BM4e86sBQs/nQYgHk70ksNyNbuLwpymFAXkb0GAehmw==}
     dev: true
 
   /@types/hast/2.3.4:
@@ -1895,6 +1903,17 @@ packages:
   /fast-levenshtein/2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
     dev: true
+
+  /fast-levenshtein/3.0.0:
+    resolution: {integrity: sha512-hKKNajm46uNmTlhHSyZkmToAc56uZJwYq7yrciZjqOxnlfQwERDQJmHPUp7m1m9wx8vgOe8IaCKZ5Kv2k1DdCQ==}
+    dependencies:
+      fastest-levenshtein: 1.0.16
+    dev: false
+
+  /fastest-levenshtein/1.0.16:
+    resolution: {integrity: sha512-eRnCtTTtGZFpQCwhJiUOuxPQWRXVKYDn0b2PeHfXL6/Zi53SLAzAHfVhVWK2AryC/WH05kGfxhFIPvTF0SXQzg==}
+    engines: {node: '>= 4.9.1'}
+    dev: false
 
   /fastparse/1.1.2:
     resolution: {integrity: sha512-483XLLxTVIwWK3QTrMGRqUfUpoOs/0hbQrl2oz4J0pAcm3A3bu84wxTFqGqkJzewCLdME38xJLJAxBABfQT8sQ==}

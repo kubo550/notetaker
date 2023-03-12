@@ -1,9 +1,9 @@
 import {
   createContext,
   useContext,
-  type ReactNode,
+  type ReactNode, useCallback
 } from "react";
-import { useWordsSource } from "../hooks/useWordsSource";
+import { useWordsSource } from "@/hooks/useWordsSource";
 
 export type GuessState = "correct" | "incorrect" | "natural";
 

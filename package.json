@@ -22,6 +22,7 @@
     "@trpc/server": "^10.9.0",
     "@uiw/react-codemirror": "^4.19.9",
     "codemirror": "^6.0.1",
+    "fast-levenshtein": "^3.0.0",
     "framer-motion": "^10.0.1",
     "lodash": "^4.17.21",
     "next": "13.1.6",
@@ -35,6 +36,7 @@
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",
     "@types/eslint": "^8.21.1",
+    "@types/fast-levenshtein": "^0.0.2",
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.11.18",
     "@types/prettier": "^2.7.2",

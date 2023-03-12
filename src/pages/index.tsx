@@ -1,18 +1,14 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
 import { useSession } from "next-auth/react";
 
 import { api } from "@/utils/api";
 import { Header } from "@/components/Header";
-import { Loader } from "@/components/Loader";
-import { Keyboard } from "@/components/Keyboard";
 import { useState } from "react";
-import type { Note, Topic } from "@prisma/client";
-import { type CreateNote, NoteEditor } from "@/components/NoteEditor";
-import { WordCard, WordCardList } from "@/components/WordCard";
+import type { Topic } from "@prisma/client";
 import { MotionWordCards } from "@/components/MotionWordCards";
 import { WordsProvider } from "@/context/WordsContext";
+import { Footer } from "@/components/Footer";
 
 const Home: NextPage = () => {
   return (
@@ -23,8 +19,16 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Header />
-      <Content />
+
+
+
+      <div className="flex flex-col min-h-screen">
+
+        <Header />
+        <Content />
+        <Footer />
+      </div>
+
     </>
   );
 };
@@ -41,64 +45,63 @@ export const Content: React.FC = () => {
     refetch: refetchTopics,
     isLoading,
     isRefetching,
-    isFetched,
+    isFetched
   } = api.topic.getAll.useQuery(undefined, {
     enabled: !!sessionData?.user,
     refetchOnWindowFocus: false,
     onSuccess: (data) => {
       // setSelectedTopic(selectedTopic ?? data[0] ?? null);
-    },
+    }
   });
 
   const { data: notes } = api.note.getAll.useQuery(
     {
-      topicId: selectedTopic?.id ?? "",
+      topicId: selectedTopic?.id ?? ""
     },
     {
-      enabled: !!sessionData?.user && !!selectedTopic?.id,
+      enabled: !!sessionData?.user && !!selectedTopic?.id
     }
   );
 
   const createTopic = api.topic.create.useMutation({
     onSuccess: () => {
       void refetchTopics();
-    },
+    }
   });
 
   return (
     <WordsProvider>
-      <main className="mx-5 mt-5 grid gap-2 ">
-        <div className="col-span-3">
-          <ul className="menu rounded-box w-56 bg-base-100 p-2">
-            {topics?.map((topic) => (
-              <li key={topic.id}>
-                <a
-                  href="#"
-                  onClick={(evt) => {
-                    evt.preventDefault();
-                    setSelectedTopic(topic);
-                  }}
-                >
-                  {topic.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-          {(isLoading || isRefetching) && <Loader />}
+      <main className="mx-5 mt-5 grid gap-2  flex-1">
+        {/*<div className="col-span-3">*/}
+        {/*  <ul className="menu rounded-box w-56 bg-base-100 p-2">*/}
+        {/*    {topics?.map((topic) => (*/}
+        {/*      <li key={topic.id}>*/}
+        {/*        <a*/}
+        {/*          href="#"*/}
+        {/*          onClick={(evt) => {*/}
+        {/*            evt.preventDefault();*/}
+        {/*            setSelectedTopic(topic);*/}
+        {/*          }}*/}
+        {/*        >*/}
+        {/*          {topic.title}*/}
+        {/*        </a>*/}
+        {/*      </li>*/}
+        {/*    ))}*/}
+        {/*  </ul>*/}
+        {/*  /!*{(isLoading || isRefetching) && <Loader />}*!/*/}
 
-          {/* <input
-          type="text"
-          className="input-bordered input-secondary input w-full max-w-xs"
-          placeholder="New topic..."
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              createTopic.mutate({ title: e.currentTarget.value });
-              e.currentTarget.value = "";
-            }
-          }}
-        /> */}
-        </div>
-        <div className="col-span-6">
+        {/*  /!* <input*/}
+        {/*  type="text"*/}
+        {/*  className="input-bordered input-secondary input w-full max-w-xs"*/}
+        {/*  placeholder="New topic..."*/}
+        {/*  onKeyDown={(e) => {*/}
+        {/*    if (e.key === "Enter") {*/}
+        {/*      createTopic.mutate({ title: e.currentTarget.value });*/}
+        {/*      e.currentTarget.value = "";*/}
+        {/*    }*/}
+        {/*  }}*/}
+        {/*/> *!/*/}
+        {/*</div>*/}
           {/* {selectedTopic && (
           <NoteEditor
             onSave={(note: CreateNote) => {
@@ -108,8 +111,7 @@ export const Content: React.FC = () => {
         )} */}
           {/* <WordCardList words={words} /> */}
 
-         {selectedTopic  && <MotionWordCards />}
-        </div>
+          <MotionWordCards wps={50} />
       </main>
     </WordsProvider>
   );

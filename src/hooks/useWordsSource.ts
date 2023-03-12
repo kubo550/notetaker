@@ -1,21 +1,21 @@
 import { api } from "@/utils/api";
-import { useCallback, useMemo, useReducer } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useSyncExternalStore } from "react";
 import {
   type WordsState,
   type WordAction,
   wordActionTypes,
   type GuessState,
-  type WordGuess,
-} from "../domain/words";
+  type WordGuess
+} from "@/domain/words";
 
 export const useWordsSource = () => {
   const { data: words } = api.word.getAll.useQuery(
     {
-      topicId: "clevccaf30000spkoz335aahn",
+      topicId: "clevccaf30000spkoz335aahn"
     },
     {
       refetchOnWindowFocus: false,
-      initialData: [],
+      initialData: []
     }
   );
 
@@ -25,32 +25,32 @@ export const useWordsSource = () => {
         case wordActionTypes.nextWordIdx:
           return {
             ...state,
-            currentWordIndex: state.currentWordIndex + 1,
+            currentWordIndex: state.currentWordIndex + 1
           };
         case wordActionTypes.previousWordIdx:
           return {
             ...state,
-            currentWordIndex: state.currentWordIndex - 1,
+            currentWordIndex: state.currentWordIndex - 1
           };
         case wordActionTypes.setUserInputValue:
           return {
             ...state,
-            currentUserInputValue: action.payload,
+            currentUserInputValue: action.payload
           };
         case wordActionTypes.setWordGuessState:
           return {
             ...state,
-            guessState: action.payload,
+            guessState: action.payload
           };
         case wordActionTypes.appendWordGuess:
           return {
             ...state,
-            userGuesses: [...state.userGuesses, action.payload],
+            userGuesses: [...state.userGuesses, action.payload]
           };
         case wordActionTypes.resetWordGuesses:
           return {
             ...state,
-            userGuesses: [],
+            userGuesses: []
           };
 
         default:
@@ -61,9 +61,40 @@ export const useWordsSource = () => {
       currentWordIndex: 0,
       currentUserInputValue: "",
       guessState: "natural",
-      userGuesses: [],
+      userGuesses: []
     }
   );
+
+
+  const timeStore = useRef({
+    time: 0
+  });
+
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const getTime = useCallback(() => {
+    return timeStore.current.time;
+  }, []);
+
+  const startTimer = useCallback(() => {
+    timerRef.current = setInterval(() => {
+      timeStore.current.time += 0.01;
+    }, 10);
+  }, []);
+
+  const stopTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+  }, []);
+
+  useEffect(() => {
+    startTimer();
+    return () => {
+      stopTimer();
+    };
+  }, [startTimer, stopTimer]);
+
 
   const hasNextWord = useMemo(() => {
     return wordsState.currentWordIndex !== words.length - 1;
@@ -85,7 +116,7 @@ export const useWordsSource = () => {
       const timeoutId = setTimeout(() => {
         dispatch({
           type: wordActionTypes.setWordGuessState,
-          payload: "natural",
+          payload: "natural"
         });
         onNextWord();
       }, timeoutMs);
@@ -111,7 +142,7 @@ export const useWordsSource = () => {
 
   const onInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (!currentWordData?.word) return 
+      if (!currentWordData?.word) return;
       if (event.target.value !== " " && wordsState.guessState === "natural") {
         setUserInputValue(event.target.value);
       }
@@ -121,6 +152,7 @@ export const useWordsSource = () => {
           word: currentWordData?.word,
           meaning: currentWordData?.meaning,
           guess: event.target.value,
+          time: getTime()
         });
 
         if (event.target.value === currentWordData?.meaning) {
@@ -130,14 +162,7 @@ export const useWordsSource = () => {
         }
       }
     },
-    [
-      setUserInputValue,
-      currentWordData?.meaning,
-      tempSetWordGuessState,
-      wordsState.guessState,
-      addUserGuess,
-      currentWordData?.word,
-    ]
+    [currentWordData?.word, currentWordData?.meaning, wordsState.guessState, setUserInputValue, addUserGuess, getTime, tempSetWordGuessState]
   );
 
   return {
@@ -149,5 +174,6 @@ export const useWordsSource = () => {
     setUserInputValue,
     tempSetWordGuessState,
     wordsState,
+    getTime
   };
 };

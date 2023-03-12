@@ -5,6 +5,7 @@ export type WordGuess = {
   word: string;
   meaning: string;
   guess: string;
+  time: number;
 };
 
 
