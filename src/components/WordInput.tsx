@@ -3,7 +3,7 @@ import { useWordsContext } from "@/context/WordsContext";
 import { useEffect, useMemo, useRef } from "react";
 
 export const WordInput = () => {
-  const { wordsState, onInputChange } =
+  const { wordsState, onInputChange, onHint } =
     useWordsContext();
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -38,6 +38,7 @@ export const WordInput = () => {
         animate={inputAnimationVariants[wordsState.guessState]}
         value={wordsState.currentUserInputValue}
         onChange={onInputChange}
+        onKeyDown={onHint}
       />
     </div>)
     ;

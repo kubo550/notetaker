@@ -1,12 +1,6 @@
 import { api } from "@/utils/api";
-import { useCallback, useEffect, useMemo, useReducer, useRef, useSyncExternalStore } from "react";
-import {
-  type WordsState,
-  type WordAction,
-  wordActionTypes,
-  type GuessState,
-  type WordGuess
-} from "@/domain/words";
+import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
+import { type GuessState, type WordAction, wordActionTypes, type WordGuess, type WordsState } from "@/domain/words";
 
 export const useWordsSource = () => {
   const { data: words } = api.word.getAll.useQuery(
@@ -69,6 +63,15 @@ export const useWordsSource = () => {
   const timeStore = useRef({
     time: 0
   });
+
+  const wordsPerMinute = useMemo(() => {
+    const wps = (wordsState.userGuesses.length / timeStore.current.time) * 60;
+    if (isNaN(wps)) {
+      return 0;
+    }
+    return wps;
+  }, [wordsState.userGuesses.length]);
+
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -140,29 +143,51 @@ export const useWordsSource = () => {
     dispatch({ type: wordActionTypes.resetWordGuesses });
   }, []);
 
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const onHint = (event: KeyboardEvent<HTMLInputElement>) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (event.key !== "Shift") {
+      return;
+    }
+
+    const currentGuessValue = wordsState.currentUserInputValue;
+    const currentWordMeaning = currentWordData?.meaning;
+    const currentGuessValueLength = currentGuessValue.length;
+    const nextChar = currentWordMeaning?.[currentGuessValueLength] || "";
+
+    setUserInputValue(currentGuessValue + nextChar);
+    checkIfGuessIsComplete(currentGuessValue + nextChar);
+  };
+
+  const checkIfGuessIsComplete = useCallback((guessText: string) => {
+    if (guessText.length === currentWordData?.meaning?.length) {
+      addUserGuess({
+        word: currentWordData?.word || "",
+        meaning: currentWordData?.meaning || "",
+        guess: guessText,
+        time: getTime()
+      });
+
+      if (guessText === currentWordData?.meaning) {
+        tempSetWordGuessState("correct");
+      } else {
+        tempSetWordGuessState("incorrect");
+      }
+    }
+  }, [currentWordData?.meaning, currentWordData?.word, addUserGuess, getTime, tempSetWordGuessState]);
+
   const onInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
+
       if (!currentWordData?.word) return;
       if (event.target.value !== " " && wordsState.guessState === "natural") {
         setUserInputValue(event.target.value);
       }
-
-      if (event.target.value.length === currentWordData.meaning.length) {
-        addUserGuess({
-          word: currentWordData?.word,
-          meaning: currentWordData?.meaning,
-          guess: event.target.value,
-          time: getTime()
-        });
-
-        if (event.target.value === currentWordData?.meaning) {
-          tempSetWordGuessState("correct");
-        } else {
-          tempSetWordGuessState("incorrect");
-        }
-      }
+      checkIfGuessIsComplete(event.target.value);
     },
-    [currentWordData?.word, currentWordData?.meaning, wordsState.guessState, setUserInputValue, addUserGuess, getTime, tempSetWordGuessState]
+    [currentWordData?.word, wordsState.guessState, checkIfGuessIsComplete, setUserInputValue]
   );
 
   return {
@@ -174,6 +199,8 @@ export const useWordsSource = () => {
     setUserInputValue,
     tempSetWordGuessState,
     wordsState,
-    getTime
+    getTime,
+    wps: wordsPerMinute,
+    onHint
   };
 };

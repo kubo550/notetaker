@@ -3,6 +3,8 @@ import { MotionWordCardDisplay } from "@/components/MotionWordCardDisplay";
 import { WordInput } from "@/components/WordInput";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useWordsContext } from "@/context/WordsContext";
+import { safeNum } from "@/components/GuessStats";
 
 
 function map(
@@ -29,11 +31,12 @@ function map(
 }
 
 
+export const MotionWordCards: React.FC<{ wps: number }> = () => {
 
-
-
-export const MotionWordCards: React.FC<{wps: number}> = ({wps}) => {
+  const { wps } = useWordsContext();
   const baseRotation = 90;
+
+
 
 
   const needleRotation = wps + baseRotation;
@@ -68,9 +71,9 @@ export const MotionWordCards: React.FC<{wps: number}> = ({wps}) => {
           height={199}
         />
 
-        <span className={'absolute left-1/2 transform -translate-x-1/2 -translate-y-9 text-xl'}>
+        <span className={"absolute left-1/2 transform -translate-x-1/2 -translate-y-9 text-xl"}>
 
-          {wps} WPS
+          {safeNum(wps)} WPS
 
         </span>
 

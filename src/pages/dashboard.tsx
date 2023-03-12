@@ -1,17 +1,7 @@
 import { NextPage } from "next";
 
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Filler,
-  Legend,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import HeartIcon from "@heroicons/react/24/outline/HeartIcon";
+import BoltIcon from "@heroicons/react/24/outline/BoltIcon";
 
 import UserGroupIcon from "@heroicons/react/24/outline/UserGroupIcon";
 import UsersIcon from "@heroicons/react/24/outline/UsersIcon";
@@ -22,6 +12,8 @@ import ArrowDownTrayIcon from "@heroicons/react/24/outline/ArrowDownTrayIcon";
 import ShareIcon from "@heroicons/react/24/outline/ShareIcon";
 import EllipsisVerticalIcon from "@heroicons/react/24/outline/EllipsisVerticalIcon";
 import ArrowPathIcon from "@heroicons/react/24/outline/ArrowPathIcon";
+import { LineChart } from "@/components/LineChart";
+import { BarChart } from "@/components/BarChart";
 
 const statsData = [
   { title: "New Users", value: "34.7k", icon: <UserGroupIcon className="w-8 h-8" />, description: "↗︎ 2300 (22%)" },
@@ -40,16 +32,6 @@ const statsData = [
   { title: "Active Users", value: "5.6k", icon: <UsersIcon className="w-8 h-8" />, description: "↙ 300 (18%)" }
 ];
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Filler,
-  Legend
-);
 
 const Dashboard: NextPage = () => {
   return (
@@ -93,16 +75,16 @@ const Dashboard: NextPage = () => {
 
       <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
 
-        <div className={"card w-full p-6 bg-base-100 shadow-xl "}>
-
-          <div className="divider mt-2"></div>
-
-          <div className='h-full w-full pb-6 bg-base-100'>
-            <LineChart />
-          </div>
-        </div>
+        <LineChart />
+        <BarChart />
 
       </div>
+
+      <div className="grid lg:grid-cols-2 mt-10 grid-cols-1 gap-6">
+        <AmountStats />
+        <PageStats />
+      </div>
+
 
     </div>
   );
@@ -139,35 +121,50 @@ function DashboardStats({ title, icon, value, description }: {
   );
 }
 
-function LineChart(){
+function AmountStats({}) {
+  return (
+    <div className="stats bg-base-100 shadow">
+      <div className="stat">
+        <div className="stat-title">Amount to be Collected</div>
+        <div className="stat-value">$25,600</div>
+        <div className="stat-actions">
+          <button className="btn btn-xs">View Users</button>
+        </div>
+      </div>
 
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-    },
-  };
-
-
-  const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-
-  const data = {
-    labels,
-    datasets: [
-      {
-        fill: true,
-        label: 'MAU',
-        data: labels.map(() => { return Math.random() * 100 + 500 }),
-        borderColor: 'rgb(53, 162, 235)',
-        backgroundColor: 'rgba(53, 162, 235, 0.5)',
-      },
-    ],
-  };
+      <div className="stat">
+        <div className="stat-title">Cash in hand</div>
+        <div className="stat-value">$5,600</div>
+        <div className="stat-actions">
+          <button className="btn btn-xs">View Members</button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 
-  return(
-      <Line data={data} options={options}/>
-  )
+function PageStats({}) {
+  return (
+    <div className="stats bg-base-100 shadow">
+
+      <div className="stat">
+        <div className="stat-figure invisible md:visible">
+          <HeartIcon className="w-8 h-8" />
+        </div>
+        <div className="stat-title">Total Likes</div>
+        <div className="stat-value">25.6K</div>
+        <div className="stat-desc">21% more than last month</div>
+      </div>
+
+      <div className="stat">
+        <div className="stat-figure invisible md:visible">
+          <BoltIcon className="w-8 h-8" />
+        </div>
+        <div className="stat-title">Page Views</div>
+        <div className="stat-value">2.6M</div>
+        <div className="stat-desc">14% more than last month</div>
+      </div>
+    </div>
+  );
 }

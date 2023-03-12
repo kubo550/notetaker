@@ -2,6 +2,15 @@ import { useWordsContext } from "@/context/WordsContext";
 import levenshtein from "fast-levenshtein";
 import { memo } from "react";
 
+
+export function safeNum(num: number) {
+  if (isNaN(num)) {
+    return 0;
+  }
+  return num.toFixed(2)
+}
+
+
 const GuessStats_: React.FC = () => {
   const { wordsState } = useWordsContext();
 
@@ -42,12 +51,6 @@ const GuessStats_: React.FC = () => {
   }, 0);
 
 
-  function safeNum(num: number) {
-    if (isNaN(num)) {
-      return 0;
-    }
-    return num.toFixed(2)
-  }
   return (
     <div>
 
